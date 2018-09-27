@@ -1,8 +1,8 @@
 ---
-title: "DALEX: A look beyond the great black box"
+title: "Descriptive mAchine Learning EXplanations: Bigger on the inside"
 subtitle: "add link to public repo"
-author: ""
-date: "October 2018"
+author: "Frankie Logan"
+date: "10-1-2018"
 output:
   xaringan::moon_reader:
     css: ["default", "default-fonts", "hygge"]
@@ -13,3 +13,210 @@ output:
       countIncrementalSlides: false
       ratio: "16:9"
 ---
+
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+---
+class: top, left
+
+# Motivation
+
+- Machine Learning (ML) models are wonderful tools that can help us tackle a wide variety of problem. However, the more
+sopisticated they become, the more obscure they become to the end users. 
+
+- Too obscure for many business use case?  
+
+
+```{r echo = FALSE}
+knitr::include_graphics("img/black_box.jpeg")
+```
+
+
+???
+can mention about current and past insurance project
+---
+class: top, left
+# DALEX: Descriptive mAchine Learning EXplanations
+
+[DALEX](https://github.com/pbiecek/DALEX)
+
+---
+class: inverse, middle, center
+# Let's see how it works in practice!
+
+---
+class: top left
+# Data/Model Prepping
+
+Explain function:
+
+```{r eval=FALSE, echo=TRUE}
+
+explain(model, data, y, predict_function, label)
+
+```
+
+E.g.
+
+```{r eval=FALSE, echo=TRUE}
+explainer_nn <- explain(
+  model, data = select(validation, predictors),
+  y = validation$lapse_count_rate,
+  predict_function = custom_predict_nn,
+  label = "Neural Network (Keras)"
+)
+```
+---
+class: top left
+# Model Performance (model_performance)
+
+```{r eval = FALSE, echo = TRUE}
+mp_nn <- model_performance(explainer_nn)
+
+mp_xgb_model <- model_performance(explainer_xgb)
+
+mp_glm <- model_performance(explainer_glm)
+
+mp_h2o <- model_performance(explainer_h2o_rf)
+
+plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
+```
+
+.pull-left[
+```{r echo=FALSE}
+knitr::include_graphics("img/mp_all.jpeg")
+```
+
+]
+.pull-right[
+```{r echo = FALSE}
+knitr::include_graphics("img/box_mp.jpeg")
+```
+
+]
+---
+class: top, left
+
+<style type="text/css">
+code.r{
+  font-size: 14px;
+}
+</style>
+
+# Single Prediction (prediction_breakdown)
+
+.pull-left[
+
+Unlike GLM & LM, we don't have coefficient output to help us measure how each predictor affect the final output.  Single Prediction function allow us to examine how each predictor are affecting one prediction. 
+
+- caveat: It doesn't handle models with too many interactions term well!
+]
+
+.pull-right[
+
+```{r eval = FALSE, echo = TRUE}
+newdata <- validation[25,] %>% 
+  select(predictors)
+
+pb_xgb <- prediction_breakdown(explainer = explainer_xgb, 
+                              observation = newdata)
+
+plot(pb_xgb)
+```
+
+```{r echo = FALSE}
+
+knitr::include_graphics("img/xgb_sp.jpeg")
+
+```
+
+]
+
+---
+class: top, left
+
+<style type="text/css">
+code.r{
+  font-size: 14px;
+}
+</style>
+
+# Model Prediction Comparison
+
+.pull-left[
+
+```{r eval = FALSE, echo = TRUE}
+pb_xgb <- prediction_breakdown(explainer_xgb, 
+                               observation = newdata)
+
+pb_nn <- prediction_breakdown(explainer_nn, 
+                              observation = newdata)
+
+pb_rf <- prediction_breakdown(explainer_h2o_rf, 
+                              observation = newdata_h2o)
+
+pb_glm <- prediction_breakdown(explainer_glm, 
+                               observation = newdata)
+
+plot(pb_xgb, pb_nn, pb_rf, pb_glm)
+```
+]
+
+.pull-right[
+
+```{r out.height = 450, echo = FALSE}
+
+knitr::include_graphics("img/all_sp.jpeg")
+
+```
+]
+
+---
+
+class: top, left
+
+# Variable Importance
+
+.pull-left[
+```{r eval = FALSE, echo=TRUE}
+vi_nn <- variable_importance(explainer_nn, 
+                             type = "ratio", 
+                             n_sample = -1)
+vi_xgb <- variable_importance(explainer_xgb, 
+                              type = "ratio", 
+                              n_sample = -1)
+vi_glm1 <- variable_importance(explainer_glm, 
+                               type = "ratio", 
+                               n_sample = -1)
+vi_h2o <- variable_importance(explainer_h2o_rf, 
+                              type = "ratio", 
+                              n_sample = -1)
+
+plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
+
+```
+]
+
+.pull-right[
+```{r out.height = 400, echo = FALSE}
+
+knitr::include_graphics("img/vi_all.jpeg")
+
+```
+]
+
+---
+class: top, left
+
+#Merging Path Plot
+
+```{r echo = FALSE}
+
+
+```
+
+
+

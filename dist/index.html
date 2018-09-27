@@ -1,23 +1,206 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>DALEX: A look beyond the great black box</title>
+    <title>Descriptive mAchine Learning EXplanations: Bigger on the inside</title>
     <meta charset="utf-8">
-    <meta name="author" content="" />
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/hygge.css" rel="stylesheet" />
+    <meta name="author" content="Frankie Logan" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/hygge.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# DALEX: A look beyond the great black box
+# Descriptive mAchine Learning EXplanations: Bigger on the inside
 ## add link to public repo
-### October 2018
+### Frankie Logan
+### 10-1-2018
 
 ---
 
+
+
+
+
+---
+class: top, left
+
+# Motivation
+
+- Machine Learning (ML) models are wonderful tools that can help us tackle a wide variety of problem. However, the more
+sopisticated they become, the more obscure they become to the end users. 
+
+- Too obscure for many business use case?  
+
+
+![](img/black_box.jpeg)&lt;!-- --&gt;
+
+
+???
+can mention about current and past insurance project
+---
+class: top, left
+# DALEX: Descriptive mAchine Learning EXplanations
+
+[DALEX](https://github.com/pbiecek/DALEX)
+
+---
+class: inverse, middle, center
+# Let's see how it works in practice!
+
+---
+class: top left
+# Data/Model Prepping
+
+Explain function:
+
+
+```r
+explain(model, data, y, predict_function, label)
+```
+
+E.g.
+
+
+```r
+explainer_nn &lt;- explain(
+  model, data = select(validation, predictors),
+  y = validation$lapse_count_rate,
+  predict_function = custom_predict_nn,
+  label = "Neural Network (Keras)"
+)
+```
+---
+class: top left
+# Model Performance (model_performance)
+
+
+```r
+mp_nn &lt;- model_performance(explainer_nn)
+
+mp_xgb_model &lt;- model_performance(explainer_xgb)
+
+mp_glm &lt;- model_performance(explainer_glm)
+
+mp_h2o &lt;- model_performance(explainer_h2o_rf)
+
+plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
+```
+
+.pull-left[
+![](img/mp_all.jpeg)&lt;!-- --&gt;
+
+]
+.pull-right[
+![](img/box_mp.jpeg)&lt;!-- --&gt;
+
+]
+---
+class: top, left
+
+&lt;style type="text/css"&gt;
+code.r{
+  font-size: 14px;
+}
+&lt;/style&gt;
+
+# Single Prediction (prediction_breakdown)
+
+.pull-left[
+
+Unlike GLM &amp; LM, we don't have coefficient output to help us measure how each predictor affect the final output.  Single Prediction function allow us to examine how each predictor are affecting one prediction. 
+
+- caveat: It doesn't handle models with too many interactions term well!
+]
+
+.pull-right[
+
+
+```r
+newdata &lt;- validation[25,] %&gt;% 
+  select(predictors)
+
+pb_xgb &lt;- prediction_breakdown(explainer = explainer_xgb, 
+                              observation = newdata)
+
+plot(pb_xgb)
+```
+
+![](img/xgb_sp.jpeg)&lt;!-- --&gt;
+
+]
+
+---
+class: top, left
+
+&lt;style type="text/css"&gt;
+code.r{
+  font-size: 14px;
+}
+&lt;/style&gt;
+
+# Model Prediction Comparison
+
+.pull-left[
+
+
+```r
+pb_xgb &lt;- prediction_breakdown(explainer_xgb, 
+                               observation = newdata)
+
+pb_nn &lt;- prediction_breakdown(explainer_nn, 
+                              observation = newdata)
+
+pb_rf &lt;- prediction_breakdown(explainer_h2o_rf, 
+                              observation = newdata_h2o)
+
+pb_glm &lt;- prediction_breakdown(explainer_glm, 
+                               observation = newdata)
+
+plot(pb_xgb, pb_nn, pb_rf, pb_glm)
+```
+]
+
+.pull-right[
+
+&lt;img src="img/all_sp.jpeg" height="450" /&gt;
+]
+
+---
+
+class: top, left
+
+# Variable Importance
+
+.pull-left[
+
+```r
+vi_nn &lt;- variable_importance(explainer_nn, 
+                             type = "ratio", 
+                             n_sample = -1)
+vi_xgb &lt;- variable_importance(explainer_xgb, 
+                              type = "ratio", 
+                              n_sample = -1)
+vi_glm1 &lt;- variable_importance(explainer_glm, 
+                               type = "ratio", 
+                               n_sample = -1)
+vi_h2o &lt;- variable_importance(explainer_h2o_rf, 
+                              type = "ratio", 
+                              n_sample = -1)
+
+plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
+```
+]
+
+.pull-right[
+&lt;img src="img/vi_all.jpeg" height="400" /&gt;
+]
+
+---
+class: top, left
+
+#Merging Path Plot
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
