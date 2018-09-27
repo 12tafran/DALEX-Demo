@@ -1,7 +1,7 @@
 ---
 title: "DALEX: A look beyond the great black box"
 subtitle: "add link to public repo"
-author: "Frankie Logan"
+author: ""
 date: "October 2018"
 output:
   xaringan::moon_reader:
