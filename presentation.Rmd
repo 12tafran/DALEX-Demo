@@ -268,7 +268,7 @@ code.r{
 <small>Let's look at all the models side by side</small>
 
 ```{r fig.align = "center", fig.height = 6.5, fig.width=12, echo = FALSE}
-plot(pb_xgb, pb_nn, pb_rf)
+plot(pb_xgb, pb_rf)
 
 ```
 
