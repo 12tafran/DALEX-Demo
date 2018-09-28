@@ -1,6 +1,5 @@
 ---
 title: "Interpreting Machine Learning: Bigger on the inside"
-subtitle: "add link to public repo"
 author: "Frankie Logan"
 date: "10-1-2018"
 output:
