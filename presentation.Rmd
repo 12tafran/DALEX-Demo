@@ -122,13 +122,13 @@ class: top left
 .pull-left[
 
 ```{r echo=FALSE}
-print(plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o))
+knitr::include_graphics("img/mp_all.jpeg")
 ```
 ]
 
 .pull-right[
 ```{r echo = FALSE}
-print(plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot"))
+knitr::include_graphics("img/box_mp.jpeg")
 ```
 
 ]
@@ -246,7 +246,7 @@ Additional resources:
 .pull-right[
 
 ```{r echo = FALSE}
-plot(pb_xgb)
+knitr::include_graphics("img/xgp_sp.jpeg")
 ```
 
 ]
@@ -264,7 +264,7 @@ code.r{
 <small>Let's look at all the models side by side</small>
 
 ```{r fig.align = "center", echo = FALSE}
-plot(pb_xgb, pb_rf)
+knitr::include_graphics("img/sp_3.jpeg")
 
 ```
 

@@ -76,7 +76,7 @@ plot(pb_nn)
 plot(pb_xgb)
 plot(pb_rf)
 plot(pb_glm)
-plot(pb_xgb, pb_nn, pb_rf, pb_glm)
+plot(pb_xgb, pb_nn, pb_rf)
 
 
 mp_nn <- model_performance(explainer_nn)
