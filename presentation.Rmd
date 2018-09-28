@@ -121,14 +121,14 @@ class: top left
 
 .pull-left[
 
-```{r fig.height = 6.5, echo=FALSE}
+```{r =FALSE}
 # knitr::include_graphics("img/mp_all.jpeg")
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 ```
 ]
 
 .pull-right[
-```{r fig.height = 6.5, echo = FALSE}
+```{r echo = FALSE}
 # knitr::include_graphics("img/box_mp.jpeg")
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot")
 ```
@@ -247,7 +247,7 @@ Additional resources:
 --
 .pull-right[
 
-```{r fig.height= 5, echo = FALSE}
+```{r echo = FALSE}
 
 plot(pb_xgb)
 
@@ -267,7 +267,7 @@ code.r{
 # Model Prediction Comparison
 <small>Let's look at all the models side by side</small>
 
-```{r fig.align = "center", fig.height = 6.5, fig.width=12, echo = FALSE}
+```{r fig.align = "center", echo = FALSE}
 plot(pb_xgb, pb_rf)
 
 ```
