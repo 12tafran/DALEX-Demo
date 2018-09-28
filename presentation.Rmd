@@ -23,7 +23,7 @@ class: top, left
 - Machine Learning (ML) models are wonderful tools that can help us tackle a wide variety of problem. However, the more
 sopisticated they become, the more obscure they become to the end users. 
 
-- Too obscure for many business use case?  
+- Too obscure for many business cases?  
 
 
 ```{r echo = FALSE}
@@ -32,9 +32,9 @@ knitr::include_graphics("img/black_box.jpeg")
 
 ---
 class: top, left
-# Avaliable Tool (Not Exhaustive)
+# Avaliable Tools (Not Exhaustive)
 
-In recent years, a lot of development has been done to increase the interpretability of ML models:
+In recent years, a lot of tools have been developed to improve the interpretability of ML models:
 
 --
 
@@ -52,12 +52,12 @@ In recent years, a lot of development has been done to increase the interpretabi
 class: top, left
 # DALEX: Descriptive mAchine Learning EXplanations
 
-[DALEX](https://github.com/pbiecek/DALEX) (Biecek 2018) is a [R](https://www.r-project.org/) package that is created by Przemyslaw Biecek that provides us with the tools "unbox" all the wonderful models
+[DALEX](https://github.com/pbiecek/DALEX) (Biecek 2018) is an [R](https://www.r-project.org/) package created by Przemyslaw Biecek that provides users with tools to "unbox" all the wonderful ML models
 
 What makes DALEX so special?
 
-- wide array of diagnostic capabilities pack into one
-- adaptability
+- Wide array of diagnostic capabilities packed into one
+- Adaptability
 - [ggplot2](https://ggplot2.tidyverse.org/)
 
 Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/)
@@ -119,19 +119,21 @@ explainer_h2o_rf <- explain(
 class: top left
 # Model Performance (model_performance())
 
-.pull-left[
 
-```{r echo=FALSE}
+
+```{r out.height = 500, echo=FALSE}
 knitr::include_graphics("img/mp_all.jpeg")
 ```
-]
 
-.pull-right[
-```{r echo = FALSE}
+
+---
+class: top, left
+# Model Performance (model_performance())
+
+```{r out.height = 500, echo = FALSE}
 knitr::include_graphics("img/box_mp.jpeg")
 ```
 
-]
 
 ---
 
@@ -179,7 +181,7 @@ mpp_xgb <- variable_response(explainer = explainer_xgb,
 plot(mpp_xgb)
 ```
 
-Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options for investigating relationship between a single variable to the predictors.  
+Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options used for investigating relationship between a single variable to the predictors.  
   
   * For continuous variable, change `type` argument to [pdp](https://github.com/bgreenwell/pdp) or [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html)
 
@@ -203,7 +205,7 @@ class: top, left
 
 # What is the exact effect of each variables?
 
-Let's look at the basic GLM example
+Let's look at a basic GLM example
 
 ```{r echo=FALSE}
 head(broom::tidy(glm1), 15)

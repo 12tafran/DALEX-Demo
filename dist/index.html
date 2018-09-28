@@ -27,16 +27,16 @@ class: top, left
 - Machine Learning (ML) models are wonderful tools that can help us tackle a wide variety of problem. However, the more
 sopisticated they become, the more obscure they become to the end users. 
 
-- Too obscure for many business use case?  
+- Too obscure for many business cases?  
 
 
 ![](img/black_box.jpeg)&lt;!-- --&gt;
 
 ---
 class: top, left
-# Avaliable Tool (Not Exhaustive)
+# Avaliable Tools (Not Exhaustive)
 
-In recent years, a lot of development has been done to increase the interpretability of ML models:
+In recent years, a lot of tools have been developed to improve the interpretability of ML models:
 
 --
 
@@ -54,12 +54,12 @@ In recent years, a lot of development has been done to increase the interpretabi
 class: top, left
 # DALEX: Descriptive mAchine Learning EXplanations
 
-[DALEX](https://github.com/pbiecek/DALEX) (Biecek 2018) is a [R](https://www.r-project.org/) package that is created by Przemyslaw Biecek that provides us with the tools "unbox" all the wonderful models
+[DALEX](https://github.com/pbiecek/DALEX) (Biecek 2018) is an [R](https://www.r-project.org/) package created by Przemyslaw Biecek that provides users with tools to "unbox" all the wonderful ML models
 
 What makes DALEX so special?
 
-- wide array of diagnostic capabilities pack into one
-- adaptability
+- Wide array of diagnostic capabilities packed into one
+- Adaptability
 - [ggplot2](https://ggplot2.tidyverse.org/)
 
 Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/)
@@ -122,15 +122,17 @@ explainer_h2o_rf &lt;- explain(
 class: top left
 # Model Performance (model_performance())
 
-.pull-left[
 
-![](img/mp_all.jpeg)&lt;!-- --&gt;
-]
 
-.pull-right[
-![](img/box_mp.jpeg)&lt;!-- --&gt;
+&lt;img src="img/mp_all.jpeg" height="500" /&gt;
 
-]
+
+---
+class: top, left
+# Model Performance (model_performance())
+
+&lt;img src="img/box_mp.jpeg" height="500" /&gt;
+
 
 ---
 
@@ -175,7 +177,7 @@ mpp_xgb &lt;- variable_response(explainer = explainer_xgb,
 plot(mpp_xgb)
 ```
 
-Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options for investigating relationship between a single variable to the predictors.  
+Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options used for investigating relationship between a single variable to the predictors.  
   
   * For continuous variable, change `type` argument to [pdp](https://github.com/bgreenwell/pdp) or [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html)
 
@@ -196,28 +198,42 @@ class: top, left
 
 # What is the exact effect of each variables?
 
-Let's look at the basic GLM example
+Let's look at a basic GLM example
 
 
 ```
-## # A tibble: 15 x 5
-##    term                             estimate std.error statistic   p.value
-##    &lt;chr&gt;                               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 (Intercept)                        0.168    0.0209       8.03 1.04e- 15
-##  2 genderM                            0.0163   0.00310      5.27 1.36e-  7
-##  3 issue_age20-29                     0.0550   0.0128       4.31 1.62e-  5
-##  4 issue_age30-39                     0.0951   0.0125       7.59 3.37e- 14
-##  5 issue_age40-49                     0.175    0.0126      13.9  6.77e- 44
-##  6 issue_age50-59                     0.246    0.0127      19.4  1.90e- 83
-##  7 issue_age60-69                     0.258    0.0131      19.8  1.02e- 86
-##  8 issue_age70+                       0.273    0.0151      18.1  1.23e- 72
-##  9 face_amountB.  100k-249k           0.0387   0.00504      7.67 1.75e- 14
-## 10 face_amountC.  250k-999k           0.0750   0.00526     14.3  4.43e- 46
-## 11 face_amountD.  1M +                0.0822   0.00635     13.0  2.66e- 38
-## 12 post_level_premium_structure2. ~  -0.202    0.00484    -41.8  0.       
-## 13 premium_jump_ratioB.  2.01 - 3.~   0.103    0.00682     15.2  6.76e- 52
-## 14 premium_jump_ratioC.  3.01 - 4.~   0.220    0.00728     30.2  3.67e-198
-## 15 premium_jump_ratioD.  4.01 - 5.~   0.285    0.00785     36.3  2.52e-284
+##                                                    term    estimate
+## 1                                           (Intercept)  0.16799931
+## 2                                               genderM  0.01633804
+## 3                                        issue_age20-29  0.05503802
+## 4                                        issue_age30-39  0.09511644
+## 5                                        issue_age40-49  0.17502204
+## 6                                        issue_age50-59  0.24619789
+## 7                                        issue_age60-69  0.25820998
+## 8                                          issue_age70+  0.27285580
+## 9                              face_amountB.  100k-249k  0.03865930
+## 10                             face_amountC.  250k-999k  0.07499850
+## 11                                  face_amountD.  1M +  0.08220559
+## 12 post_level_premium_structure2. Premium Jump to Other -0.20200622
+## 13                    premium_jump_ratioB.  2.01 - 3.00  0.10346277
+## 14                    premium_jump_ratioC.  3.01 - 4.00  0.21990284
+## 15                    premium_jump_ratioD.  4.01 - 5.00  0.28530306
+##      std.error  statistic       p.value
+## 1  0.020932940   8.025596  1.037625e-15
+## 2  0.003099473   5.271231  1.362122e-07
+## 3  0.012763327   4.312200  1.620236e-05
+## 4  0.012538698   7.585830  3.374909e-14
+## 5  0.012580622  13.912034  6.773458e-44
+## 6  0.012691317  19.398924  1.904256e-83
+## 7  0.013050016  19.786181  1.017145e-86
+## 8  0.015106666  18.061947  1.234534e-72
+## 9  0.005040029   7.670451  1.752569e-14
+## 10 0.005256056  14.268968  4.431032e-46
+## 11 0.006345893  12.954141  2.657733e-38
+## 12 0.004835395 -41.776574  0.000000e+00
+## 13 0.006816047  15.179291  6.764105e-52
+## 14 0.007280908  30.202666 3.667519e-198
+## 15 0.007853698  36.327223 2.522872e-284
 ```
 
 ---
