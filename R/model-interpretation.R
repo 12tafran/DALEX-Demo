@@ -5,9 +5,6 @@ source("R/averages-method.R")
 source("R/xgb.R")
 source("R/h2o-model.R")
 
-validation <- validation %>% 
-  mutate_at(vars(one_of(predictors)), .funs = as.factor)
-
 custom_predict_nn <- function(model, data) {
   keras_data <- bake(rec_nn, data) %>%
     make_keras_data()
