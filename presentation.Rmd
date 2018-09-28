@@ -122,13 +122,13 @@ class: top left
 .pull-left[
 
 ```{r echo=FALSE}
-plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
+print(plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o))
 ```
 ]
 
 .pull-right[
 ```{r echo = FALSE}
-plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot")
+print(plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot"))
 ```
 
 ]
