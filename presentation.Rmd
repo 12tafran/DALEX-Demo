@@ -121,15 +121,13 @@ class: top left
 
 .pull-left[
 
-```{r =FALSE}
-# knitr::include_graphics("img/mp_all.jpeg")
+```{r echo=FALSE}
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 ```
 ]
 
 .pull-right[
 ```{r echo = FALSE}
-# knitr::include_graphics("img/box_mp.jpeg")
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot")
 ```
 
@@ -248,9 +246,7 @@ Additional resources:
 .pull-right[
 
 ```{r echo = FALSE}
-
 plot(pb_xgb)
-
 ```
 
 ]
