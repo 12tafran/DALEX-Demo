@@ -117,27 +117,20 @@ explainer_h2o_rf <- explain(
 ```
 ---
 class: top left
-# Model Performance (model_performance)
-
-How good is your model?
-
---
-
-```{r eval = FALSE, echo = TRUE}
-mp_nn <- model_performance(explainer_nn)
-
-plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
-```
+# Model Performance (model_performance())
 
 .pull-left[
-```{r echo=FALSE}
-knitr::include_graphics("img/mp_all.jpeg")
-```
 
+```{r fig.height = 6.5, echo=FALSE}
+# knitr::include_graphics("img/mp_all.jpeg")
+plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
+```
 ]
+
 .pull-right[
-```{r echo = FALSE}
-knitr::include_graphics("img/box_mp.jpeg")
+```{r fig.height = 6.5, echo = FALSE}
+# knitr::include_graphics("img/box_mp.jpeg")
+plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot")
 ```
 
 ]
@@ -146,7 +139,7 @@ knitr::include_graphics("img/box_mp.jpeg")
 
 class: top, left
 
-# Variable Importance (variable_importance)
+# Variable Importance (variable_importance())
 
 Which variable are the most important in your model? 
 
@@ -173,7 +166,7 @@ knitr::include_graphics("img/vi_all.jpeg")
 ---
 class: top, left
 
-#Merging Path Plot (variable_response)
+#Merging Path Plot (variable_response())
 
 What is the relationship between the variable and the prediction?
 
@@ -228,7 +221,7 @@ code.r{
 }
 </style>
 
-# Single Prediction (prediction_breakdown)
+# Single Prediction (prediction_breakdown())
 
 --
 .pull-left[

@@ -120,25 +120,15 @@ explainer_h2o_rf &lt;- explain(
 ```
 ---
 class: top left
-# Model Performance (model_performance)
-
-How good is your model?
-
---
-
-
-```r
-mp_nn &lt;- model_performance(explainer_nn)
-
-plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
-```
+# Model Performance (model_performance())
 
 .pull-left[
-![](img/mp_all.jpeg)&lt;!-- --&gt;
 
+![](C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 ]
+
 .pull-right[
-![](img/box_mp.jpeg)&lt;!-- --&gt;
+![](C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -146,7 +136,7 @@ plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 
 class: top, left
 
-# Variable Importance (variable_importance)
+# Variable Importance (variable_importance())
 
 Which variable are the most important in your model? 
 
@@ -169,7 +159,7 @@ plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
 ---
 class: top, left
 
-#Merging Path Plot (variable_response)
+#Merging Path Plot (variable_response())
 
 What is the relationship between the variable and the prediction?
 
@@ -239,7 +229,7 @@ code.r{
 }
 &lt;/style&gt;
 
-# Single Prediction (prediction_breakdown)
+# Single Prediction (prediction_breakdown())
 
 --
 .pull-left[
@@ -266,7 +256,7 @@ Additional resources:
 --
 .pull-right[
 
-![](C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -282,7 +272,7 @@ code.r{
 # Model Prediction Comparison
 &lt;small&gt;Let's look at all the models side by side&lt;/small&gt;
 
-&lt;img src="C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
 
 
 ---
