@@ -1,5 +1,5 @@
 ---
-title: "Descriptive mAchine Learning EXplanations: Bigger on the inside"
+title: "Interpreting Machine Learning: Bigger on the inside"
 subtitle: "add link to public repo"
 author: "Frankie Logan"
 date: "10-1-2018"
@@ -35,13 +35,19 @@ knitr::include_graphics("img/black_box.jpeg")
 class: top, left
 # Avaliable Tool (Not Exhaustive)
 
-- [DALEX](https://github.com/pbiecek/DALEX)
+In recent years, a lot of development has been done to increase the interpretability of ML models:
 
-- [lime](https://github.com/thomasp85/lime)
+--
 
-- [live](https://github.com/MI2DataLab/live)
+* [DALEX](https://github.com/pbiecek/DALEX)
 
-- [pdp](https://github.com/bgreenwell/pdp)
+* [lime](https://github.com/thomasp85/lime)
+
+* [live](https://github.com/MI2DataLab/live)
+
+* [pdp](https://github.com/bgreenwell/pdp)
+
+* etc...
 
 ---
 class: top, left
@@ -53,44 +59,30 @@ What makes DALEX so special?
 
 - wide array of diagnostic capabilities pack into one
 - adaptability
-- [ggplot2](https://ggplot2.tidyverse.org/) (Wickham)
+- [ggplot2](https://ggplot2.tidyverse.org/)
 
-Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/) (Biecek Aug 2018)
+Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/)
+
+---
+
+class: inverse, middle, center
+# Let's see how it works in practice!
+---
+class: inverse, middle center
+
+# Shock Lapse in Post Level Term
 
 ---
 class: top, left
+# Background/housekeeping
+
+Data: [SOA Post Level Term Lapse Study](https://www.soa.org/experience-studies/2014/research-2014-post-level-shock/)
 
 
-# DALEX capabilities
-
-- Model Performance (`model_performance()`)
-
-  * How good is your model?
-
-- Variable Importance (`variable_importance()`)
-
-  * Which variable are the most important in your model? 
-
-- Variable Response (`variable_response()`)
-
-  * What is the relationship between the variable and the prediction?
-  * [pdp](https://github.com/bgreenwell/pdp), [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html), [factor](https://github.com/MI2DataLab/factorMerger)
-
-- Prediction breakdown (`prediction_breakdown()`)
-
-  * What is the exact effect of each variables?
-  
-
-Additional resources:
-
-- https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf
-- https://arxiv.org/abs/1709.04412
-- https://arxiv.org/abs/1804.01955
+Predictors: Gender, Issue Age, Face Amount, Post Level Premium Structure, Premium Jump Ratio, Risk Class, Premium Mode
 
 
----
-class: inverse, middle, center
-# Let's see how it works in practice!
+Responses: Lapse Count Rate
 
 ---
 class: top left
@@ -103,29 +95,37 @@ Explain function:
 explain(model, data, y, predict_function, label)
 
 ```
+--
+Customize your predict function
 
+```{r eval=FALSE, echo=TRUE}
+custom_predict_h2o <- function(model, newdata)  {
+  newdata_h2o <- as.h2o(newdata)
+  res <- as.data.frame(h2o.predict(model, newdata_h2o))
+  return(as.numeric(res$predict))
+}
+```
+--
 e.g.
 
 ```{r eval=FALSE, echo=TRUE}
-explainer_nn <- explain(
-  model, data = select(validation, predictors),
-  y = validation$lapse_count_rate,
-  predict_function = custom_predict_nn,
-  label = "Neural Network (Keras)"
-)
+explainer_h2o_rf <- explain(
+  model = samplemodel,
+  data = select(validation_h2o, predictors),
+  y = validation_h2o$lapse_count_rate,
+  predict_function = custom_predict_h2o,
+  label = "Random Forest (H2O)")
 ```
 ---
 class: top left
 # Model Performance (model_performance)
 
+How good is your model?
+
+--
+
 ```{r eval = FALSE, echo = TRUE}
 mp_nn <- model_performance(explainer_nn)
-
-mp_xgb_model <- model_performance(explainer_xgb)
-
-mp_glm <- model_performance(explainer_glm)
-
-mp_h2o <- model_performance(explainer_h2o_rf)
 
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 ```
@@ -142,6 +142,84 @@ knitr::include_graphics("img/box_mp.jpeg")
 ```
 
 ]
+
+---
+
+class: top, left
+
+# Variable Importance (variable_importance)
+
+Which variable are the most important in your model? 
+
+--
+
+.pull-left[
+```{r eval = FALSE, echo=TRUE}
+vi_nn <- variable_importance(explainer_nn, 
+                             type = "ratio", 
+                             n_sample = -1)
+
+plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
+
+```
+]
+
+.pull-right[
+```{r out.height = 400, echo = FALSE}
+
+knitr::include_graphics("img/vi_all.jpeg")
+
+```
+]
+---
+class: top, left
+
+#Merging Path Plot (variable_response)
+
+What is the relationship between the variable and the prediction?
+
+--
+
+.pull-left[
+```{r eval = FALSE, echo = TRUE}
+mpp_xgb <- variable_response(explainer = explainer_xgb, 
+                             variable = "risk_class", 
+                             type = "factor")
+
+plot(mpp_xgb)
+```
+
+Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options for investigating relationship between a single variable to the predictors.  
+  
+  * For continuous variable, change `type` argument to [pdp](https://github.com/bgreenwell/pdp) or [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html)
+
+
+Additional resources:
+
+* [pdp paper](https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf)
+* [Merging Path Plot Paper](https://arxiv.org/abs/1709.04412)
+
+]
+.pull-right[
+
+```{r echo = FALSE}
+knitr::include_graphics("img/mpp_xgb.jpeg")
+
+```
+
+]
+---
+class: top, left
+
+# What is the exact effect of each variables?
+
+Let's look at the basic GLM example
+
+```{r echo=FALSE}
+head(broom::tidy(glm1), 15)
+
+```
+
 ---
 class: top, left
 
@@ -153,15 +231,12 @@ code.r{
 
 # Single Prediction (prediction_breakdown)
 
+--
 .pull-left[
 
-Unlike GLM & LM, we don't have coefficient output to help us measure how each predictor affect the final output.  Single Prediction function allow us to examine how each predictor are affecting one prediction. 
-
-- caveat: It doesn't handle models with too many interactions term well!
-]
-
-.pull-right[
-
+`prediction_breakdown` uses [breakDown](https://pbiecek.github.io/breakDown/) package as a base
+  * caveat: It doesn't handle models with too many interactions term well!
+  
 ```{r eval = FALSE, echo = TRUE}
 newdata <- validation[25,] %>% 
   select(predictors)
@@ -172,9 +247,17 @@ pb_xgb <- prediction_breakdown(explainer = explainer_xgb,
 plot(pb_xgb)
 ```
 
-```{r echo = FALSE}
+Additional resources:
 
-knitr::include_graphics("img/xgb_sp.jpeg")
+* [live and breakDown Paper](https://arxiv.org/abs/1804.01955)
+
+]
+--
+.pull-right[
+
+```{r fig.height= 5, echo = FALSE}
+
+plot(pb_xgb)
 
 ```
 
@@ -190,106 +273,39 @@ code.r{
 </style>
 
 # Model Prediction Comparison
+<small>Let's look at all the models side by side</small>
 
-.pull-left[
-
-```{r eval = FALSE, echo = TRUE}
-pb_xgb <- prediction_breakdown(explainer_xgb, 
-                               observation = newdata)
-
-pb_nn <- prediction_breakdown(explainer_nn, 
-                              observation = newdata)
-
-pb_rf <- prediction_breakdown(explainer_h2o_rf, 
-                              observation = newdata_h2o)
-
-pb_glm <- prediction_breakdown(explainer_glm, 
-                               observation = newdata)
-
-plot(pb_xgb, pb_nn, pb_rf, pb_glm)
-```
-]
-
-.pull-right[
-
-```{r out.height = 450, echo = FALSE}
-
-knitr::include_graphics("img/all_sp.jpeg")
+```{r fig.align = "center", fig.height = 6.5, fig.width=12, echo = FALSE}
+plot(pb_xgb, pb_nn, pb_rf)
 
 ```
-]
+
 
 ---
 
 class: top, left
-
-# Variable Importance (variable_importance)
-
-.pull-left[
-```{r eval = FALSE, echo=TRUE}
-vi_nn <- variable_importance(explainer_nn, 
-                             type = "ratio", 
-                             n_sample = -1)
-vi_xgb <- variable_importance(explainer_xgb, 
-                              type = "ratio", 
-                              n_sample = -1)
-vi_glm1 <- variable_importance(explainer_glm, 
-                               type = "ratio", 
-                               n_sample = -1)
-vi_h2o <- variable_importance(explainer_h2o_rf, 
-                              type = "ratio", 
-                              n_sample = -1)
-
-plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
-
-```
-]
-
-.pull-right[
-```{r out.height = 400, echo = FALSE}
-
-knitr::include_graphics("img/vi_all.jpeg")
-
-```
-]
-
----
-class: top, left
-
-#Merging Path Plot (variable_response)
-
-.pull-left[
-```{r eval = FALSE, echo = TRUE}
-mpp_xgb <- variable_response(explainer = explainer_xgb, 
-                             variable = "risk_class", 
-                             type = "factor")
-
-plot(mpp_xgb)
-```
-]
-
-.pull-right[
-
-```{r echo = FALSE}
-knitr::include_graphics("img/mpp_xgb.jpeg")
-
-```
-
-]
-
----
-class: top, left
+<style type="text/css">
+body{
+  font-size: 14px;
+}
+</style>
 #Reference
 
-Biecek, Przemyslaw. DALEX. Descriptive MAchine Learning EXplanations, 2018, pbiecek.github.io/DALEX/.
+<small>Biecek, Przemyslaw. DALEX. Descriptive MAchine Learning EXplanations, 2018, https://pbiecek.github.io/DALEX/.
 
-Biecek, Przemyslaw. DALEX: Descriptive MAchine Learning EXplanations. Descriptive MAchine Learning EXplanations DALEX, 11 Aug. 2018, pbiecek.github.io/DALEX_docs/.
+Biecek Przemyslaw. (2018). DALEX: explainers for complex predictive models. ArXiv e-prints. 1806.08915, https://arxiv.org/abs/1806.08915.
 
-Greenwell, Brandon. A General Framework for Constructing Partial Dependence (I.e., Marginal Effect) Plots from Various Types Machine Learning Models in R. GitHub, 25 Sept. 2016, github.com/bgreenwell/pdp.
+Biecek, Przemyslaw. DALEX: Descriptive MAchine Learning EXplanations. Descriptive MAchine Learning EXplanations DALEX, 11 Aug. 2018, https://pbiecek.github.io/DALEX_docs/.
+
+Greenwell, Brandon. A General Framework for Constructing Partial Dependence (I.e., Marginal Effect) Plots from Various Types Machine Learning Models in R. GitHub, 25 Sept. 2016, https://github.com/bgreenwell/pdp.
 
 Wickham H (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. ISBN 978-3-319-24277-4, http://ggplot2.org.
 
-Pedersen, Thomas. thomasp85/Lime. GitHub, 2017, github.com/thomasp85/lime.
+Pedersen, Thomas. thomasp85/Lime. GitHub, 2017, https://github.com/thomasp85/lime.
 
-Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, github.com/MI2DataLab/live.
+Sitko A and Biecek P (2017). The Merging Path Plot: adaptive fusing of k-groups with likelihood-based model selection. https://arxiv.org/abs/1709.04412.
+
+Staniak M, Biecek P (2018). Explanations of Model Predictions with live and breakDown Packages. ArXiv e-prints. 1804.01955, https://arxiv.org/abs/1804.01955.
+
+Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, https://github.com/MI2DataLab/live.</small>
 

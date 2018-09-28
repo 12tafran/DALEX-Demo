@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Descriptive mAchine Learning EXplanations: Bigger on the inside</title>
+    <title>Interpreting Machine Learning: Bigger on the inside</title>
     <meta charset="utf-8">
     <meta name="author" content="Frankie Logan" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
@@ -12,7 +12,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Descriptive mAchine Learning EXplanations: Bigger on the inside
+# Interpreting Machine Learning: Bigger on the inside
 ## add link to public repo
 ### Frankie Logan
 ### 10-1-2018
@@ -37,13 +37,19 @@ sopisticated they become, the more obscure they become to the end users.
 class: top, left
 # Avaliable Tool (Not Exhaustive)
 
-- [DALEX](https://github.com/pbiecek/DALEX)
+In recent years, a lot of development has been done to increase the interpretability of ML models:
 
-- [lime](https://github.com/thomasp85/lime)
+--
 
-- [live](https://github.com/MI2DataLab/live)
+* [DALEX](https://github.com/pbiecek/DALEX)
 
-- [pdp](https://github.com/bgreenwell/pdp)
+* [lime](https://github.com/thomasp85/lime)
+
+* [live](https://github.com/MI2DataLab/live)
+
+* [pdp](https://github.com/bgreenwell/pdp)
+
+* etc...
 
 ---
 class: top, left
@@ -55,44 +61,30 @@ What makes DALEX so special?
 
 - wide array of diagnostic capabilities pack into one
 - adaptability
-- [ggplot2](https://ggplot2.tidyverse.org/) (Wickham)
+- [ggplot2](https://ggplot2.tidyverse.org/)
 
-Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/) (Biecek Aug 2018)
+Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/)
+
+---
+
+class: inverse, middle, center
+# Let's see how it works in practice!
+---
+class: inverse, middle center
+
+# Shock Lapse in Post Level Term
 
 ---
 class: top, left
+# Background/housekeeping
+
+Data: [SOA Post Level Term Lapse Study](https://www.soa.org/experience-studies/2014/research-2014-post-level-shock/)
 
 
-# DALEX capabilities
-
-- Model Performance (`model_performance()`)
-
-  * How good is your model?
-
-- Variable Importance (`variable_importance()`)
-
-  * Which variable are the most important in your model? 
-
-- Variable Response (`variable_response()`)
-
-  * What is the relationship between the variable and the prediction?
-  * [pdp](https://github.com/bgreenwell/pdp), [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html), [factor](https://github.com/MI2DataLab/factorMerger)
-
-- Prediction breakdown (`prediction_breakdown()`)
-
-  * What is the exact effect of each variables?
-  
-
-Additional resources:
-
-- https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf
-- https://arxiv.org/abs/1709.04412
-- https://arxiv.org/abs/1804.01955
+Predictors: Gender, Issue Age, Face Amount, Post LEvel Premium Structure, Premium Jump Ratio, Risk Class, Premium Mode
 
 
----
-class: inverse, middle, center
-# Let's see how it works in practice!
+Responses: Lapse Count Rate
 
 ---
 class: top left
@@ -104,31 +96,40 @@ Explain function:
 ```r
 explain(model, data, y, predict_function, label)
 ```
+--
+Customize your predict function
 
+
+```r
+custom_predict_h2o &lt;- function(model, newdata)  {
+  newdata_h2o &lt;- as.h2o(newdata)
+  res &lt;- as.data.frame(h2o.predict(model, newdata_h2o))
+  return(as.numeric(res$predict))
+}
+```
+--
 e.g.
 
 
 ```r
-explainer_nn &lt;- explain(
-  model, data = select(validation, predictors),
-  y = validation$lapse_count_rate,
-  predict_function = custom_predict_nn,
-  label = "Neural Network (Keras)"
-)
+explainer_h2o_rf &lt;- explain(
+  model = samplemodel,
+  data = select(validation_h2o, predictors),
+  y = validation_h2o$lapse_count_rate,
+  predict_function = custom_predict_h2o,
+  label = "Random Forest (H2O)")
 ```
 ---
 class: top left
 # Model Performance (model_performance)
 
+How good is your model?
+
+--
+
 
 ```r
 mp_nn &lt;- model_performance(explainer_nn)
-
-mp_xgb_model &lt;- model_performance(explainer_xgb)
-
-mp_glm &lt;- model_performance(explainer_glm)
-
-mp_h2o &lt;- model_performance(explainer_h2o_rf)
 
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 ```
@@ -141,6 +142,95 @@ plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
 ![](img/box_mp.jpeg)&lt;!-- --&gt;
 
 ]
+
+---
+
+class: top, left
+
+# Variable Importance (variable_importance)
+
+Which variable are the most important in your model? 
+
+--
+
+.pull-left[
+
+```r
+vi_nn &lt;- variable_importance(explainer_nn, 
+                             type = "ratio", 
+                             n_sample = -1)
+
+plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
+```
+]
+
+.pull-right[
+&lt;img src="img/vi_all.jpeg" height="400" /&gt;
+]
+---
+class: top, left
+
+#Merging Path Plot (variable_response)
+
+What is the relationship between the variable and the prediction?
+
+--
+
+.pull-left[
+
+```r
+mpp_xgb &lt;- variable_response(explainer = explainer_xgb, 
+                             variable = "risk_class", 
+                             type = "factor")
+
+plot(mpp_xgb)
+```
+
+Merging Path Plot utilizes [factorMerger](https://mi2datalab.github.io/factorMerger/) and is one of the three options for investigating relationship between a single variable to the predictors.  
+  
+  * For continuous variable, change `type` argument to [pdp](https://github.com/bgreenwell/pdp) or [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html)
+
+
+Additional resources:
+
+* [pdp paper](https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf)
+* [Merging Path Plot Paper](https://arxiv.org/abs/1709.04412)
+
+]
+.pull-right[
+
+![](img/mpp_xgb.jpeg)&lt;!-- --&gt;
+
+]
+---
+class: top, left
+
+# What is the exact effect of each variables?
+
+Let's look at the basic GLM example
+
+
+```
+## # A tibble: 15 x 5
+##    term                             estimate std.error statistic   p.value
+##    &lt;chr&gt;                               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 (Intercept)                        0.168    0.0209       8.03 1.04e- 15
+##  2 genderM                            0.0163   0.00310      5.27 1.36e-  7
+##  3 issue_age20-29                     0.0550   0.0128       4.31 1.62e-  5
+##  4 issue_age30-39                     0.0951   0.0125       7.59 3.37e- 14
+##  5 issue_age40-49                     0.175    0.0126      13.9  6.77e- 44
+##  6 issue_age50-59                     0.246    0.0127      19.4  1.90e- 83
+##  7 issue_age60-69                     0.258    0.0131      19.8  1.02e- 86
+##  8 issue_age70+                       0.273    0.0151      18.1  1.23e- 72
+##  9 face_amountB.  100k-249k           0.0387   0.00504      7.67 1.75e- 14
+## 10 face_amountC.  250k-999k           0.0750   0.00526     14.3  4.43e- 46
+## 11 face_amountD.  1M +                0.0822   0.00635     13.0  2.66e- 38
+## 12 post_level_premium_structure2. ~  -0.202    0.00484    -41.8  0.       
+## 13 premium_jump_ratioB.  2.01 - 3.~   0.103    0.00682     15.2  6.76e- 52
+## 14 premium_jump_ratioC.  3.01 - 4.~   0.220    0.00728     30.2  3.67e-198
+## 15 premium_jump_ratioD.  4.01 - 5.~   0.285    0.00785     36.3  2.52e-284
+```
+
 ---
 class: top, left
 
@@ -152,15 +242,12 @@ code.r{
 
 # Single Prediction (prediction_breakdown)
 
+--
 .pull-left[
 
-Unlike GLM &amp; LM, we don't have coefficient output to help us measure how each predictor affect the final output.  Single Prediction function allow us to examine how each predictor are affecting one prediction. 
-
-- caveat: It doesn't handle models with too many interactions term well!
-]
-
-.pull-right[
-
+`prediction_breakdown` uses [breakDown](https://pbiecek.github.io/breakDown/) package as a base
+  * caveat: It doesn't handle models with too many interactions term well!
+  
 
 ```r
 newdata &lt;- validation[25,] %&gt;% 
@@ -172,7 +259,15 @@ pb_xgb &lt;- prediction_breakdown(explainer = explainer_xgb,
 plot(pb_xgb)
 ```
 
-![](img/xgb_sp.jpeg)&lt;!-- --&gt;
+Additional resources:
+
+* [live and breakDown Paper](https://arxiv.org/abs/1804.01955)
+
+]
+--
+.pull-right[
+
+![](C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -186,99 +281,38 @@ code.r{
 &lt;/style&gt;
 
 # Model Prediction Comparison
+&lt;small&gt;Let's look at all the models side by side&lt;/small&gt;
 
-.pull-left[
+&lt;img src="C:/Users/frank/Documents/DALEX-Demo/dist/index_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
 
-
-```r
-pb_xgb &lt;- prediction_breakdown(explainer_xgb, 
-                               observation = newdata)
-
-pb_nn &lt;- prediction_breakdown(explainer_nn, 
-                              observation = newdata)
-
-pb_rf &lt;- prediction_breakdown(explainer_h2o_rf, 
-                              observation = newdata_h2o)
-
-pb_glm &lt;- prediction_breakdown(explainer_glm, 
-                               observation = newdata)
-
-plot(pb_xgb, pb_nn, pb_rf, pb_glm)
-```
-]
-
-.pull-right[
-
-&lt;img src="img/all_sp.jpeg" height="450" /&gt;
-]
 
 ---
 
 class: top, left
-
-# Variable Importance (variable_importance)
-
-.pull-left[
-
-```r
-vi_nn &lt;- variable_importance(explainer_nn, 
-                             type = "ratio", 
-                             n_sample = -1)
-vi_xgb &lt;- variable_importance(explainer_xgb, 
-                              type = "ratio", 
-                              n_sample = -1)
-vi_glm1 &lt;- variable_importance(explainer_glm, 
-                               type = "ratio", 
-                               n_sample = -1)
-vi_h2o &lt;- variable_importance(explainer_h2o_rf, 
-                              type = "ratio", 
-                              n_sample = -1)
-
-plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
-```
-]
-
-.pull-right[
-&lt;img src="img/vi_all.jpeg" height="400" /&gt;
-]
-
----
-class: top, left
-
-#Merging Path Plot (variable_response)
-
-.pull-left[
-
-```r
-mpp_xgb &lt;- variable_response(explainer = explainer_xgb, 
-                             variable = "risk_class", 
-                             type = "factor")
-
-plot(mpp_xgb)
-```
-]
-
-.pull-right[
-
-![](img/mpp_xgb.jpeg)&lt;!-- --&gt;
-
-]
-
----
-class: top, left
+&lt;style type="text/css"&gt;
+body{
+  font-size: 14px;
+}
+&lt;/style&gt;
 #Reference
 
-Biecek, Przemyslaw. DALEX. Descriptive MAchine Learning EXplanations, 2018, pbiecek.github.io/DALEX/.
+&lt;small&gt;Biecek, Przemyslaw. DALEX. Descriptive MAchine Learning EXplanations, 2018, https://pbiecek.github.io/DALEX/.
 
-Biecek, Przemyslaw. DALEX: Descriptive MAchine Learning EXplanations. Descriptive MAchine Learning EXplanations DALEX, 11 Aug. 2018, pbiecek.github.io/DALEX_docs/.
+Biecek Przemyslaw. (2018). DALEX: explainers for complex predictive models. ArXiv e-prints. 1806.08915, https://arxiv.org/abs/1806.08915.
 
-Greenwell, Brandon. A General Framework for Constructing Partial Dependence (I.e., Marginal Effect) Plots from Various Types Machine Learning Models in R. GitHub, 25 Sept. 2016, github.com/bgreenwell/pdp.
+Biecek, Przemyslaw. DALEX: Descriptive MAchine Learning EXplanations. Descriptive MAchine Learning EXplanations DALEX, 11 Aug. 2018, https://pbiecek.github.io/DALEX_docs/.
+
+Greenwell, Brandon. A General Framework for Constructing Partial Dependence (I.e., Marginal Effect) Plots from Various Types Machine Learning Models in R. GitHub, 25 Sept. 2016, https://github.com/bgreenwell/pdp.
 
 Wickham H (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. ISBN 978-3-319-24277-4, http://ggplot2.org.
 
-Pedersen, Thomas. thomasp85/Lime. GitHub, 2017, github.com/thomasp85/lime.
+Pedersen, Thomas. thomasp85/Lime. GitHub, 2017, https://github.com/thomasp85/lime.
 
-Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, github.com/MI2DataLab/live.
+Sitko A and Biecek P (2017). The Merging Path Plot: adaptive fusing of k-groups with likelihood-based model selection. https://arxiv.org/abs/1709.04412.
+
+Staniak M, Biecek P (2018). Explanations of Model Predictions with live and breakDown Packages. ArXiv e-prints. 1804.01955, https://arxiv.org/abs/1804.01955.
+
+Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, https://github.com/MI2DataLab/live.&lt;/small&gt;
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
