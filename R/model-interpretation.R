@@ -103,4 +103,6 @@ mpp_h2o <- variable_response(explainer_h2o_rf, "risk_class", type = "factor")
 
 plot(mpp_nn, mpp_xgb, mpp_glm, mpp_h2o)
 
+plot(mpp_xgb)
+
 h2o.shutdown(prompt=FALSE)

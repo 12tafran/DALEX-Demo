@@ -13,13 +13,10 @@ output:
       countIncrementalSlides: false
       ratio: "16:9"
 ---
-
-
-
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 ```
----
+
 class: top, left
 
 # Motivation
@@ -34,14 +31,62 @@ sopisticated they become, the more obscure they become to the end users.
 knitr::include_graphics("img/black_box.jpeg")
 ```
 
+---
+class: top, left
+# Avaliable Tool (Not Exhaustive)
 
-???
-can mention about current and past insurance project
+- [DALEX](https://github.com/pbiecek/DALEX)
+
+- [lime](https://github.com/thomasp85/lime)
+
+- [live](https://github.com/MI2DataLab/live)
+
+- [pdp](https://github.com/bgreenwell/pdp)
+
 ---
 class: top, left
 # DALEX: Descriptive mAchine Learning EXplanations
 
-[DALEX](https://github.com/pbiecek/DALEX)
+[DALEX](https://github.com/pbiecek/DALEX) (Biecek 2018) is a [R](https://www.r-project.org/) package that is created by Przemyslaw Biecek that provides us with the tools "unbox" all the wonderful models
+
+What makes DALEX so special?
+
+- wide array of diagnostic capabilities pack into one
+- adaptability
+- [ggplot2](https://ggplot2.tidyverse.org/) (Wickham)
+
+Additional Resource: [https://pbiecek.github.io/DALEX_docs/](https://pbiecek.github.io/DALEX_docs/) (Biecek Aug 2018)
+
+---
+class: top, left
+
+
+# DALEX capabilities
+
+- Model Performance (`model_performance()`)
+
+  * How good is your model?
+
+- Variable Importance (`variable_importance()`)
+
+  * Which variable are the most important in your model? 
+
+- Variable Response (`variable_response()`)
+
+  * What is the relationship between the variable and the prediction?
+  * [pdp](https://github.com/bgreenwell/pdp), [ale](https://cran.r-project.org/web/packages/ALEPlot/index.html), [factor](https://github.com/MI2DataLab/factorMerger)
+
+- Prediction breakdown (`prediction_breakdown()`)
+
+  * What is the exact effect of each variables?
+  
+
+Additional resources:
+
+- https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf
+- https://arxiv.org/abs/1709.04412
+- https://arxiv.org/abs/1804.01955
+
 
 ---
 class: inverse, middle, center
@@ -59,7 +104,7 @@ explain(model, data, y, predict_function, label)
 
 ```
 
-E.g.
+e.g.
 
 ```{r eval=FALSE, echo=TRUE}
 explainer_nn <- explain(
@@ -178,7 +223,7 @@ knitr::include_graphics("img/all_sp.jpeg")
 
 class: top, left
 
-# Variable Importance
+# Variable Importance (variable_importance)
 
 .pull-left[
 ```{r eval = FALSE, echo=TRUE}
@@ -211,12 +256,40 @@ knitr::include_graphics("img/vi_all.jpeg")
 ---
 class: top, left
 
-#Merging Path Plot
+#Merging Path Plot (variable_response)
+
+.pull-left[
+```{r eval = FALSE, echo = TRUE}
+mpp_xgb <- variable_response(explainer = explainer_xgb, 
+                             variable = "risk_class", 
+                             type = "factor")
+
+plot(mpp_xgb)
+```
+]
+
+.pull-right[
 
 ```{r echo = FALSE}
-
+knitr::include_graphics("img/mpp_xgb.jpeg")
 
 ```
 
+]
 
+---
+class: top, left
+#Reference
+
+Biecek, Przemyslaw. DALEX. Descriptive MAchine Learning EXplanations, 2018, pbiecek.github.io/DALEX/.
+
+Biecek, Przemyslaw. DALEX: Descriptive MAchine Learning EXplanations. Descriptive MAchine Learning EXplanations DALEX, 11 Aug. 2018, pbiecek.github.io/DALEX_docs/.
+
+Greenwell, Brandon. A General Framework for Constructing Partial Dependence (I.e., Marginal Effect) Plots from Various Types Machine Learning Models in R. GitHub, 25 Sept. 2016, github.com/bgreenwell/pdp.
+
+Wickham H (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. ISBN 978-3-319-24277-4, http://ggplot2.org.
+
+Pedersen, Thomas. thomasp85/Lime. GitHub, 2017, github.com/thomasp85/lime.
+
+Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, github.com/MI2DataLab/live.
 
