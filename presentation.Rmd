@@ -208,7 +208,7 @@ class: top, left
 Let's look at a basic GLM example
 
 ```{r echo=FALSE}
-head(broom::tidy(glm1), 15)
+head(broom::tidy(glm1), 10)
 
 ```
 
