@@ -29,7 +29,24 @@ sopisticated they become, the more obscure they become to the end users.
 ```{r echo = FALSE}
 knitr::include_graphics("img/black_box.jpeg")
 ```
+---
+class: top, left
+# White Box model vs Black Box model
+--
 
+.pull-left[
+```{r echo=FALSE}
+head(broom::tidy(glm1) %>% select(term, estimate, p.value), 10)
+
+```
+]
+--
+.pull-right[
+
+```{r echo = FALSE}
+knitr::include_graphics("img/black_box_lol.jpeg")
+```
+]
 ---
 class: top, left
 # Avaliable Tools (Not Exhaustive)
@@ -205,7 +222,7 @@ class: top, left
 
 # What is the exact effect of each variables?
 
-Let's look at a basic GLM example
+Let's look back at a basic GLM example
 
 ```{r echo=FALSE}
 head(broom::tidy(glm1), 10)

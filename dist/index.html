@@ -31,7 +31,34 @@ sopisticated they become, the more obscure they become to the end users.
 
 
 ![](img/black_box.jpeg)&lt;!-- --&gt;
+---
+class: top, left
+# White Box vs Black Box
+--
 
+.pull-left[
+
+```
+## # A tibble: 10 x 3
+##    term                     estimate  p.value
+##    &lt;chr&gt;                       &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)                0.168  1.04e-15
+##  2 genderM                    0.0163 1.36e- 7
+##  3 issue_age20-29             0.0550 1.62e- 5
+##  4 issue_age30-39             0.0951 3.37e-14
+##  5 issue_age40-49             0.175  6.77e-44
+##  6 issue_age50-59             0.246  1.90e-83
+##  7 issue_age60-69             0.258  1.02e-86
+##  8 issue_age70+               0.273  1.23e-72
+##  9 face_amountB.  100k-249k   0.0387 1.75e-14
+## 10 face_amountC.  250k-999k   0.0750 4.43e-46
+```
+]
+--
+.pull-right[
+
+![](img/black_box_lol.jpeg)&lt;!-- --&gt;
+]
 ---
 class: top, left
 # Avaliable Tools (Not Exhaustive)
@@ -198,7 +225,7 @@ class: top, left
 
 # What is the exact effect of each variables?
 
-Let's look at a basic GLM example
+Let's look back at a basic GLM example
 
 
 ```
