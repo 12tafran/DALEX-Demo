@@ -162,24 +162,18 @@ Which variable are the most important in your model?
 
 --
 
-.pull-left[
 ```{r eval = FALSE, echo=TRUE}
-vi_nn <- variable_importance(explainer_nn, 
-                             type = "ratio", 
-                             n_sample = -1)
-
+vi_nn <- variable_importance(explainer_nn, type = "ratio", n_sample = -1)
 plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
 
 ```
-]
 
-.pull-right[
 ```{r out.height = 400, echo = FALSE}
 
 knitr::include_graphics("img/vi_all.jpeg")
 
 ```
-]
+
 ---
 class: top, left
 

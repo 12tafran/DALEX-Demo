@@ -33,7 +33,7 @@ sopisticated they become, the more obscure they become to the end users.
 ![](img/black_box.jpeg)&lt;!-- --&gt;
 ---
 class: top, left
-# White Box vs Black Box
+# White Box model vs Black Box model
 --
 
 .pull-left[
@@ -171,20 +171,14 @@ Which variable are the most important in your model?
 
 --
 
-.pull-left[
 
 ```r
-vi_nn &lt;- variable_importance(explainer_nn, 
-                             type = "ratio", 
-                             n_sample = -1)
-
+vi_nn &lt;- variable_importance(explainer_nn, type = "ratio", n_sample = -1)
 plot(vi_xgb, vi_glm1, vi_nn, vi_h2o)
 ```
-]
 
-.pull-right[
 &lt;img src="img/vi_all.jpeg" height="400" /&gt;
-]
+
 ---
 class: top, left
 
