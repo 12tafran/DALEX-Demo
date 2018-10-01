@@ -131,7 +131,7 @@ class: top, left
 # Model Performance (model_performance())
 
 ```{r out.height = 500, echo = FALSE}
-knitr::include_graphics("img/box_mp.jpeg")
+knitr::include_graphics("img/mp_box_all_outliers.jpeg")
 ```
 
 
@@ -299,3 +299,8 @@ Staniak M, Biecek P (2018). Explanations of Model Predictions with live and brea
 
 Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnostic) Visual Explanations. GitHub, 2017, https://github.com/MI2DataLab/live.</small>
 
+---
+
+class: top, left
+
+#Questions Time?

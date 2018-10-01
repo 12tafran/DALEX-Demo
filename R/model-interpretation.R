@@ -81,7 +81,7 @@ mp_xgb_model <- model_performance(explainer_xgb)
 mp_glm <- model_performance(explainer_glm)
 mp_h2o <- model_performance(explainer_h2o_rf)
 plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o)
-plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot")
+plot(mp_xgb_model, mp_glm, mp_nn, mp_h2o, geom = "boxplot", show_outliers = 1)
 
 
 vi_nn <- variable_importance(explainer_nn, type = "ratio", n_sample = -1)
