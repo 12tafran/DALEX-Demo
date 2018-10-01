@@ -303,4 +303,4 @@ Staniak, Mateusz, and Biecek Przemyslaw. Live: Local Interpretable (Model-Agnost
 
 class: top, left
 
-#Questions Time?
+#Questions?
