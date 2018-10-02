@@ -148,7 +148,7 @@ class: top, left
 # Model Performance (model_performance())
 
 ```{r out.height = 500, echo = FALSE}
-knitr::include_graphics("img/mp_box_all_outliers.jpeg")
+knitr::include_graphics("img/mp_box_all_outliers_fixed.jpeg")
 ```
 
 
